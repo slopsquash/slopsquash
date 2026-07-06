@@ -1,0 +1,43 @@
+{
+  "name": "slopsquash",
+  "version": "0.1.0",
+  "description": "Hello world stub + shim MCP server",
+  "type": "module",
+  "bin": {
+    "slopsquash": "build/cli.js",
+    "slopsquash-mcp": "build/mcp-server.js"
+  },
+  "main": "./build/index.js",
+  "types": "./build/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./build/index.d.ts",
+      "import": "./build/index.js"
+    }
+  },
+  "files": [
+    "build",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc && chmod 755 build/cli.js build/mcp-server.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "slopsquash",
+    "mcp",
+    "hello-world"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.1",
+    "zod": "^3.25.67"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.33",
+    "typescript": "^5.8.3"
+  }
+}
