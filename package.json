@@ -17,6 +17,7 @@
   },
   "files": [
     "build",
+    "data",
     "README.md"
   ],
   "scripts": {

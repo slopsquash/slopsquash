@@ -1,6 +1,6 @@
 # slopsquash
 
-An MCP server that stops AI agents from installing slopsquatted packages.
+An AI-native MCP server and CLI that stops autonomous agents from installing slopsquatted or malicious packages.
 
 ## The problem
 
@@ -8,85 +8,99 @@ LLMs hallucinate package names, and attackers publish malware under those exact 
 
 ## What it does
 
-slopsquash runs as an MCP server your agent calls before every install. It checks whether the package actually exists, how long it's been published, and whether it matches known slopsquat patterns, then blocks or warns before the install happens.
+**slopsquash** is a "fire-and-forget" safety net. It runs as an MCP server that your AI agent is instructed to call before every package install. 
 
-## Why this and not Aikido/PMG/Socket
+It checks packages using a lightning-fast, 5-stage pipeline:
+1. **Known Malicious:** Blocks packages manually flagged or reported by the community.
+2. **Similarity Engine:** Detects typosquatting against the top 10,000 packages using Levenshtein distance and Jaro-Winkler similarity (e.g. catches `chalks` for `chalk`).
+3. **Hallucination Patterns:** Flags known AI-hallucinated packages (e.g. `llama_cpp`, `starlite-graphql`) based on curated datasets.
+4. **Popularity Bypass:** Immediately allows known, high-impact packages without unnecessary network calls.
+5. **Registry Checks:** Finally, queries `npmjs.org` or `pypi.org` to check if a package actually exists and warns if it's suspiciously brand-new.
 
-Those tools guard against known-malicious packages and enforce install age. slopsquash guards the step before that: catching hallucinated names an agent invents on its own.
+### 🛡️ Zero Execution Risk
+The entire codebase is purely string comparisons, dictionary lookups, and lightweight metadata API calls. **We never run `npm install`, download tarballs, or execute package code.** It is fully isolated and safe.
 
 ## Quick start
 
-### Install
-
-```bash
-npm install -g slopsquash
-```
-
-Or run directly with npx — no install needed:
-
-```bash
-npx slopsquash
-```
-
 ### CLI
 
-```bash
-# Default greeting
-slopsquash
-# Hello, world! 👋  You've been slopsquashed.
+Check single or multiple packages before installing. Supports both `npm` (default) and `pypi`:
 
-# Named greeting
-slopsquash Alice
-# Hello, Alice! 👋  You've been slopsquashed.
+```bash
+npx slopsquash check express chalks react
+```
+Output:
+```
+✅ express — ALLOW
+   ℹ️  [popular] 'express' is a known popular package
+
+🛑 chalks — BLOCK
+   ↳ Did you mean: chalk
+   🔴 [similarity] 'chalks' is suspiciously similar to popular package 'chalk' (edit distance: 1, similarity: 0.97)
+
+✅ react — ALLOW
+   ℹ️  [popular] 'react' is a known popular package
 ```
 
-### Library
+```bash
+npx slopsquash check requests llama_cpp --pypi
+```
+Output:
+```
+✅ requests — ALLOW
+   ℹ️  [popular] 'requests' is a known popular package
+
+🛑 llama_cpp — BLOCK
+   🔴 [pattern] 'llama_cpp' matches a known AI-hallucinated package name
+   🟡 [registry] 'llama_cpp' was not found on the pypi registry
+```
+
+### Library Usage (TypeScript)
+
+Use the pipeline directly in your Node projects:
 
 ```typescript
-import { greet } from "slopsquash";
+import { checkPackage, checkPackages } from "slopsquash";
 
-console.log(greet());        // Hello, world! 👋  You've been slopsquashed.
-console.log(greet("Alice")); // Hello, Alice! 👋  You've been slopsquashed.
+const result = await checkPackage("expresss", "npm");
+console.log(result.verdict); // "block"
+console.log(result.suggestion); // "express"
 ```
 
-### MCP server
+### MCP Server
 
-slopsquash ships a stdio-based MCP server that exposes a `greet` tool. Connect it to any MCP host.
+slopsquash provides a stdio-based MCP server that AI agents use directly. You can configure it in any MCP-compatible host.
 
-#### Claude Desktop
+**Claude Code:**
+```bash
+claude mcp add slopsquash -- npx -y slopsquash@latest slopsquash-mcp
+```
 
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+**Codex:**
+```bash
+codex mcp add slopsquash -- npx -y slopsquash@latest slopsquash-mcp
+```
+
+**Claude Desktop / Cursor / Windsurf / Others:**
+Add the following to your MCP configuration file (e.g., `claude_desktop_config.json`):
 
 ```json
 {
   "mcpServers": {
     "slopsquash": {
       "command": "npx",
-      "args": ["slopsquash-mcp"]
+      "args": ["-y", "slopsquash@latest", "slopsquash-mcp"]
     }
   }
 }
 ```
 
-#### VS Code / Cursor / any MCP client
+The MCP Server exposes the following tools:
+- `check_package_before_install`: Check a single package.
+- `check_packages_before_install`: Batch check multiple packages.
 
-```json
-{
-  "command": "npx",
-  "args": ["slopsquash-mcp"]
-}
-```
-
-Restart the host after saving. The server exposes one tool:
-
-| Tool    | Input          | Description                                      |
-|---------|----------------|--------------------------------------------------|
-| `greet` | `name?` string | Say hello via slopsquash. Omit name for default.  |
-
-## Status
-
-Early and actively built. The greet tool is a stub — real slopsquat-detection logic is coming. Feedback, issues, and PRs welcome.
+It also provides an MCP Prompt (`package-install-safety`) which hosts can inject into the agent's system prompt to strongly reinforce the rule: *always check packages before running npm/pip install*.
 
 ## License
 
-GPL-3.0
+MIT
