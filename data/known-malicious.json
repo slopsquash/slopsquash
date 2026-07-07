@@ -1,0 +1,6 @@
+{
+  "description": "Known malicious package names (community-reported slopsquats and confirmed malware)",
+  "sources": ["manual curation", "OSV", "npm advisories"],
+  "npm": [],
+  "pypi": []
+}
