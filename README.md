@@ -26,10 +26,23 @@ The entire codebase comprises of string comparisons, dictionary lookups, and met
 
 ### MCP Server
 
-slopsquash provides a MCP server that AI agents use directly.
+slopsquash provides a stdio-based MCP server that AI agents use directly. You can configure it in any MCP-compatible host.
 
-**Claude Desktop Configuration:**
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+**Claude Code:**
+
+```bash
+claude mcp add slopsquash -- npx -y slopsquash@latest slopsquash-mcp
+```
+
+**Codex:**
+
+```bash
+codex mcp add slopsquash -- npx -y slopsquash@latest slopsquash-mcp
+```
+
+**Other clients (Claude Desktop, Cursor, Windsurf, VSCode, etc.):**
+
+Add the following to your MCP configuration file (e.g., `claude_desktop_config.json`):
 
 ```json
 {
@@ -98,50 +111,6 @@ console.log(result.verdict); // "block"
 console.log(result.suggestion); // "express"
 ```
 
-### MCP Server
-
-<<<<<<< HEAD
-slopsquash provides a stdio-based MCP server that AI agents use directly. You can configure it in any MCP-compatible host.
-
-**Claude Code:**
-
-```bash
-claude mcp add slopsquash -- npx -y slopsquash@latest slopsquash-mcp
-```
-
-**Codex:**
-
-```bash
-codex mcp add slopsquash -- npx -y slopsquash@latest slopsquash-mcp
-```
-
-**Claude Desktop / Cursor / Windsurf / Others:**
-Add the following to your MCP configuration file (e.g., `claude_desktop_config.json`):
-=======
-slopsquash provides a stdio-based MCP server that AI agents use directly.
-
-**Claude Desktop Configuration:**
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
-
-> > > > > > > 520fb35e52437212a4b53cd92e0f92f681de9094
-
-```json
-{
-  "mcpServers": {
-    "slopsquash": {
-      "command": "npx",
-      "args": ["-y", "slopsquash@latest", "slopsquash-mcp"]
-    }
-  }
-}
-```
-
-The MCP Server exposes the following tools:
-
-- `check_package_before_install`: Check a single package.
-- `check_packages_before_install`: Batch check multiple packages.
-
-It also provides an MCP Prompt (`package-install-safety`) which hosts can inject into the agent's system prompt to strongly reinforce the rule: _always check packages before running npm/pip install_.
 
 ## License
 
