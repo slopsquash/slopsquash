@@ -1,6 +1,6 @@
 {
   "name": "slopsquash",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "fire-and-forget MCP server that stops AI agents from being slopsquatted",
   "type": "module",
   "bin": {
