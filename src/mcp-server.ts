@@ -143,14 +143,17 @@ This protects against slopsquatting (AI-hallucinated package names), typosquatti
   }),
 );
 
-// ── Boot ────────────────────────────────────────────────────────────────
-async function main() {
+/* v8 ignore start */
+export async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
   console.error('slopsquash MCP server running on stdio');
 }
 
-main().catch((err) => {
-  console.error('Fatal error:', err);
-  process.exit(1);
-});
+if (process.env.NODE_ENV !== 'test') {
+  main().catch((err) => {
+    console.error('Fatal error:', err);
+    process.exit(1);
+  });
+}
+/* v8 ignore stop */

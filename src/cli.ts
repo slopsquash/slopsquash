@@ -11,10 +11,9 @@
 import { checkPackage, checkPackages } from './pipeline/runner.js';
 import type { Ecosystem } from './types.js';
 
-const args = process.argv.slice(2);
-
-if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
-  console.log(`
+export async function main(args: string[]) {
+  if (args.length === 0 || args[0] === '--help' || args[0] === '-h') {
+    console.log(`
 slopsquash — AI-native protection against slopsquatted packages.
 
 Usage:
@@ -33,10 +32,9 @@ Examples:
   slopsquash check chalks lodash-utils react-form-helpers
   slopsquash check requests --pypi
 `);
-  process.exit(0);
-}
+    process.exit(0);
+  }
 
-async function main() {
   const command = args[0];
   if (command !== 'check') {
     console.error(`Unknown command: ${command}. Use 'slopsquash check <package>' or 'slopsquash --help'.`);
@@ -90,7 +88,11 @@ async function main() {
   process.exit(hasBlocked ? 1 : 0);
 }
 
-main().catch((err) => {
-  console.error('Error:', err.message || err);
-  process.exit(1);
-});
+/* v8 ignore start */
+if (process.env.NODE_ENV !== 'test') {
+  main(process.argv.slice(2)).catch((err) => {
+    console.error('Error:', err.message || err);
+    process.exit(1);
+  });
+}
+/* v8 ignore stop */

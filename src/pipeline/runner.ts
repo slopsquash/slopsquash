@@ -102,7 +102,33 @@ export async function checkPackage(
         confidence = Math.max(confidence, 0.6);
       }
     } else {
-      // Use cached data but don't add a reason (we already checked before)
+      const entry = cache.get(name)!;
+      if (!entry.exists) {
+        // If it's a confirmed missing package (note: network errors also cache as exists=false currently, 
+        // but we'll treat them as missing for safety since we couldn't verify it).
+        reasons.push({
+          check: 'registry',
+          detail: `'${name}' was not found on the ${ecosystem} registry (cached)`,
+          severity: 'medium',
+        });
+        confidence = Math.max(confidence, 0.6);
+      } else if (entry.publishedAt) {
+        const ageMs = Date.now() - new Date(entry.publishedAt).getTime();
+        const ageDays = ageMs / (1000 * 60 * 60 * 24);
+        if (ageDays < 7) {
+          reasons.push({
+            check: 'registry',
+            detail: `'${name}' was published only ${Math.floor(ageDays)} day(s) ago on ${ecosystem} (cached)`,
+            severity: 'medium',
+          });
+        } else if (ageDays < 30) {
+          reasons.push({
+            check: 'registry',
+            detail: `'${name}' was published ${Math.floor(ageDays)} days ago on ${ecosystem} (cached)`,
+            severity: 'low',
+          });
+        }
+      }
     }
   }
 

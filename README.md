@@ -31,13 +31,13 @@ slopsquash provides a stdio-based MCP server that AI agents use directly. You ca
 **Claude Code:**
 
 ```bash
-claude mcp add slopsquash -- npx -y slopsquash@latest slopsquash-mcp
+claude mcp add slopsquash -- npx -y --package slopsquash@latest slopsquash-mcp
 ```
 
 **Codex:**
 
 ```bash
-codex mcp add slopsquash -- npx -y slopsquash@latest slopsquash-mcp
+codex mcp add slopsquash -- npx -y --package slopsquash@latest slopsquash-mcp
 ```
 
 **Other clients (Claude Desktop, Cursor, Windsurf, VSCode, etc.):**
@@ -49,7 +49,7 @@ Add the following to your MCP configuration file (e.g., `claude_desktop_config.j
   "mcpServers": {
     "slopsquash": {
       "command": "npx",
-      "args": ["-y", "slopsquash@latest", "slopsquash-mcp"]
+      "args": ["-y", "--package", "slopsquash@latest", "slopsquash-mcp"]
     }
   }
 }
