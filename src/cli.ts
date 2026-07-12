@@ -71,15 +71,15 @@ async function main() {
 
   let hasBlocked = false;
   for (const result of results) {
-    const icon = result.verdict === 'block' ? '🛑' : result.verdict === 'warn' ? '⚠️ ' : '✅';
+    const icon = result.verdict === 'block' ? '[x]' : result.verdict === 'warn' ? '[!]' : '[v]';
     console.log(`\n${icon} ${result.name} — ${result.verdict.toUpperCase()}`);
 
     if (result.suggestion) {
-      console.log(`   ↳ Did you mean: ${result.suggestion}?`);
+      console.log(`   > Did you mean: ${result.suggestion}?`);
     }
 
     for (const r of result.reasons) {
-      const sevIcon = r.severity === 'critical' ? '🚫' : r.severity === 'high' ? '🔴' : r.severity === 'medium' ? '🟡' : 'ℹ️ ';
+      const sevIcon = r.severity === 'critical' ? '[x]' : r.severity === 'high' ? '[!]' : r.severity === 'medium' ? '[-]' : '[i]';
       console.log(`   ${sevIcon} [${r.check}] ${r.detail}`);
     }
 

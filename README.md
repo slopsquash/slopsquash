@@ -73,15 +73,15 @@ npx slopsquash check express chalks react
 Output:
 
 ```
-✅ express — ALLOW
-   ℹ️  [popular] 'express' is a known popular package
+[v] express — ALLOW
+   [i] [popular] 'express' is a known popular package
 
-🛑 chalks — BLOCK
-   ↳ Did you mean: chalk
-   🔴 [similarity] 'chalks' is suspiciously similar to popular package 'chalk' (edit distance: 1, similarity: 0.97)
+[x] chalks — BLOCK
+   > Did you mean: chalk
+   [!] [similarity] 'chalks' is suspiciously similar to popular package 'chalk' (edit distance: 1, similarity: 0.97)
 
-✅ react — ALLOW
-   ℹ️  [popular] 'react' is a known popular package
+[v] react — ALLOW
+   [i] [popular] 'react' is a known popular package
 ```
 
 ```bash
@@ -91,12 +91,12 @@ npx slopsquash check requests llama_cpp --pypi
 Output:
 
 ```
-✅ requests — ALLOW
-   ℹ️  [popular] 'requests' is a known popular package
+[v] requests — ALLOW
+   [i] [popular] 'requests' is a known popular package
 
-🛑 llama_cpp — BLOCK
-   🔴 [pattern] 'llama_cpp' matches a known AI-hallucinated package name
-   🟡 [registry] 'llama_cpp' was not found on the pypi registry
+[x] llama_cpp — BLOCK
+   [!] [pattern] 'llama_cpp' matches a known AI-hallucinated package name
+   [-] [registry] 'llama_cpp' was not found on the pypi registry
 ```
 
 ### Library Usage (TypeScript)

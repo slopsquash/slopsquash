@@ -1,7 +1,7 @@
 {
   "name": "slopsquash",
   "version": "0.1.0",
-  "description": "Hello world stub + shim MCP server",
+  "description": "fire-and-forget MCP server that stops AI agents from being slopsquatted",
   "type": "module",
   "bin": {
     "slopsquash": "build/cli.js",
@@ -25,9 +25,13 @@
     "prepublishOnly": "npm run build"
   },
   "keywords": [
+    "slopsquatting",
     "slopsquash",
     "mcp",
-    "hello-world"
+    "ai",
+    "agents",
+    "security",
+    "typosquatting"
   ],
   "license": "MIT",
   "engines": {
